@@ -1,11 +1,4 @@
-const {
-  getBase,
-  populateURL,
-  getSource,
-  getFirstItem,
-  newItem,
-  sendSlackMessage
-} = require('./utils');
+const { checkCraigslist } = require('./utils');
 const { refreshRate } = require('./constants');
 
 const patio = {
@@ -20,21 +13,11 @@ const patio = {
   }
 };
 
-const checkCraigslist = async ({ city, category, parameters }) => {
-  const base = getBase(city, category);
-  const url = populateURL(base, parameters);
-  const source = await getSource(url);
-  const item = await getFirstItem(source);
-
-  if (newItem(item.link)) {
-    sendSlackMessage(item);
-  }
+const search = async () => {
+  setInterval(async () => {
+    await checkCraigslist(patio)
+      .catch(e => console.log(e));
+  }, refreshRate * 1000);
 }
 
-(async () => {
-  setInterval(async () => {
-    await checkCraigslist(patio);
-  }, refreshRate);
-})().catch(e => {
-  console.log(e)
-});
+search().catch(e => console.log(e));

@@ -1,6 +1,5 @@
 const cache = 100;
-
-const refreshRate = 60 * 1000;
+const refreshRate = 60;
 
 const categories = {
   'all': 'sss',

@@ -4,6 +4,10 @@ const { webhook } = require('./config')
 
 let previous = [];
 
+const getCurrentTime = () => {
+  return '[' + new Date().toUTCString() + ']';
+}
+
 const getBase = (city, category) => {
   return `https://${city}.craigslist.org/search/${categories[category]}?`
 }
@@ -60,7 +64,6 @@ const getFirstItem = async source => {
 }
 
 const newItem = link => {
-  const id = 'test';
   if (previous.includes(link)) {
     previous = previous.filter(item => item !== link);
     previous.push(link);
@@ -74,6 +77,9 @@ const newItem = link => {
 }
 
 const sendSlackMessage = ({ title, link, location, image }) => {
+  if (!webhook) {
+    return console.log('No webhook configured, see config.js');
+  }
   const formattedTitle = !location.includes('</a>') ?
     title + location : title
   const attachments = [
@@ -91,15 +97,31 @@ const sendSlackMessage = ({ title, link, location, image }) => {
     url: webhook,
     form: { payload: JSON.stringify({ attachments }) }
   };
-  const callback = (error, res, body) => console.log('Tried to send Slack message:', res.statusCode, error ? error : body);
+  const callback = (error, res, body) => {
+    if (error) {
+      console.log(getCurrentTime(), 'Failed to send Slack message:', error);
+    }
+    else {
+      console.log(getCurrentTime(), 'Sent Slack message:', formattedTitle)
+    }
+  };
   request.post(body, callback);
 }
 
+const checkCraigslist = async ({ city, category, parameters }) => {
+  const base = getBase(city, category);
+  const url = populateURL(base, parameters);
+  const source = await getSource(url);
+  const item = await getFirstItem(source);
+
+  if (newItem(item.link)) {
+    sendSlackMessage(item);
+  }
+  else {
+    console.log(getCurrentTime(), 'No new items');
+  }
+}
+
 module.exports = {
-  getBase,
-  populateURL,
-  getSource,
-  getFirstItem,
-  newItem,
-  sendSlackMessage,
+  checkCraigslist,
 };

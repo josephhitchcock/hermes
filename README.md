@@ -1,4 +1,4 @@
-# craigslist-notifications
+# hermes
 A tool to get notifications for new Craigslist postings
 
 ## Requirements

@@ -22,10 +22,10 @@ A search object has the following attributes:
   * `searchTitle`: A **boolean** indicating to only search titles
   * `hasImage`: A **boolean** indicating that the listing must have an image
   * `postedToday`: A **boolean** indicating that the listing must have been posted today
-  * `distance`: An **integer** indicating the search radius from `zipCode`
-  * `zipCode`: An **integer** indicating the zip code to search in
-  * `minPrice`: An **integer** indicating the minimum price
-  * `maxPrice`: An **integer** indicating the maximum price
+  * `distance`: A **string** indicating the search radius from `zipCode`
+  * `zipCode`: A **string** indicating the zip code to search in
+  * `minPrice`: A **string** indicating the minimum price
+  * `maxPrice`: A **string** indicating the maximum price
 
 ## Additional configuration
 * The `refreshRate` in [constants.js](https://github.com/josephhitchcock/craigslist-notifications/blob/master/constants.js#L2) indicates how often (in seconds) the search will be polled for new items.
